@@ -1,11 +1,11 @@
-import { ITransaction, Transaction } from "./transaction.model";
+import { IEscrow, Escrow } from "./escrow.model";
 
-export const saveTx = async (data: ITransaction) => {
-  await Transaction.create(data);
+export const saveTx = async (data: IEscrow) => {
+  await Escrow.create(data);
 };
 
 // export const updateTx = async (txHash: string, payoutHash: string) => {
-//   return Transaction.findOneAndUpdate(
+//   return Escrow.findOneAndUpdate(
 //     { tx_hash: txHash },
 //     { payout_hash: payoutHash },
 //     { returnOriginal: false }
@@ -13,9 +13,9 @@ export const saveTx = async (data: ITransaction) => {
 // };
 
 export const getTxs = async () => {
-  return Transaction.find();
+  return Escrow.find();
 };
 
 export const getTxByHash = async (hash: string) => {
-  return Transaction.findOne({ tx_hash: hash });
+  return Escrow.findOne({ tx_hash: hash });
 };
