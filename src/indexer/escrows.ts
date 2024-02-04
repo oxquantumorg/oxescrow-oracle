@@ -5,7 +5,7 @@ import {
   Commitment,
   Transaction,
   ParsedInstruction,
-  ConfirmedSignaturesForAddress2Options
+  ConfirmedSignaturesForAddress2Options,
 } from "@solana/web3.js";
 const { Token, TOKEN_PROGRAM_ID } = require("@solana/spl-token");
 
@@ -48,22 +48,17 @@ const checkTx = async (txHash): Promise<void> => {
   return null;
 };
 
-const fetchTx = async () => {
+const indexEscrows = async () => {
+
   const res = await connection.getConfirmedSignaturesForAddress2(
-    targetAddress, 
-    {limit: 3, until: "2nqoi2PoeKWjDJSe5PKtYwUhCnF9eTJLCAsXLFFvRxAaANjWm9NjBFiFxZCMd7qtK3wuqEMpVE8HfpgoFgzyFBRS"}
+    targetAddress,
+    {
+      limit: 3,
+      until:
+        "2nqoi2PoeKWjDJSe5PKtYwUhCnF9eTJLCAsXLFFvRxAaANjWm9NjBFiFxZCMd7qtK3wuqEMpVE8HfpgoFgzyFBRS",
+    }
   );
   console.log(res);
 };
 
-try {
-  // checkTx(txHash);
-  fetchTx()
-  // const subscription = connection.onLogs(
-  //   targetAddress,
-  //   parseTokenDepositLog,
-  //   commitment
-  // );
-} catch (error) {
-  console.log(error);
-}
+export default indexEscrows;

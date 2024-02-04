@@ -1,4 +1,4 @@
-import { IEscrow, Escrow } from "./escrow.model";
+import { IEscrow, Escrow } from "../escrow.model";
 
 export const saveTx = async (data: IEscrow) => {
   await Escrow.create(data);
