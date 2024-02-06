@@ -3,6 +3,7 @@ import {model, Schema} from "mongoose";
 export interface IEscrow {
   created_at: Date;
   updated_at: Date;
+  input_tx_hash: string;
   payout_tx_hash: string;
   token_pubkey: string;
   sender_account_pubkey: string;
@@ -12,15 +13,18 @@ export interface IEscrow {
   escrow_account_pubkey: string;
   escrow_amount: number;
   expire_date: number;
+  completed: number;
 }
 
 const escrowSchema = new Schema<IEscrow>(
   {
     escrow_amount: Number,
     expire_date: Number,
+    input_tx_hash: { type: String, unique: true },
     payout_tx_hash: { type: String, unique: true },
     escrow_account_pubkey: { type: String, unique: true },
     token_pubkey: String,
+    completed: Number,
     sender_account_pubkey: String,
     temp_token_account_pubkey: String,
     receiver_account_pubkey: String,

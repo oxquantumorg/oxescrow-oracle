@@ -1,7 +1,8 @@
 require("./config/global");
 import { Connection, ParsedInstruction, PublicKey } from "@solana/web3.js";
 import { getData } from "./database/wrappers/dataWrapper";
-const BN = require("bn.js");
+import bs58 from "bs58";
+import config from "./config";
 const cron = require("node-cron");
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
@@ -19,33 +20,45 @@ const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
     const data = await getData();
     let lastBlockHash: string | null = data ? data.last_block_hash : null;
-    const escrowProgramPubkey = new PublicKey(
-      "JDvqLZ7ytrWUrPeDArR6E7XQe84VJExm6XvQHV5wst6N"
-    );
-    const options = { limit: 1, until: lastBlockHash };
+    const escrowProgramPubkey = config.escrowProgramPubkey;
+    const options = { limit: 5, until: lastBlockHash };
     const blocks = await connection.getConfirmedSignaturesForAddress2(
       escrowProgramPubkey,
       options
     );
 
     blocks.forEach(async (block) => {
-      const res = await connection.getParsedTransaction(block.signature);
+      const hash = block.signature;
+      const res = await connection.getParsedTransaction(hash);
       const txs = res.transaction.message.instructions;
       txs.forEach(async (tx) => {
-        //   console.log(txs);
         if (tx.programId.equals(escrowProgramPubkey)) {
-          const txIX = tx as any;
+          const txIX: any = tx as ParsedInstruction;
           const escrowPubKey = JSON.stringify(txIX.accounts[3]);
           const data = txIX.data;
-          const bufferResult = Uint8Array.from(data)
-          const inst = bufferResult[0]
-          const res = [...bufferResult]
-          res.shift()
-          console.log(inst);
-        // const valueBytes = bufferResult.slice(1);
-        const transferAmount = new BN(bufferResult, 10, 'le');
-        console.log(transferAmount.toString());
-        
+          const dataAsUint8Arr = bs58.decode(data);
+          const call = dataAsUint8Arr[0];
+          const amount = dataAsUint8Arr[1];
+
+          const storeData = {
+            input_tx_hash: "",
+            payout_tx_hash: "",
+            token_pubkey: config.mint,
+            sender_account_pubkey: "",
+            temp_token_account_pubkey: "",
+            receiver_account_pubkey: "",
+            receiver_token_account_pubkey: "",
+            escrow_account_pubkey: "",
+            escrow_amount: amount,
+            expire_date: 0,
+            completed: call,
+          };
+
+          if (call === 0) storeData.input_tx_hash = hash;
+          if (call === 1) storeData.payout_tx_hash = hash;
+
+          console.log(call, amount);
+          console.log(escrowPubKey);
         }
 
         //   saveEscrow(tx);
