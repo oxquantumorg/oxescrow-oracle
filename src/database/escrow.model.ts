@@ -13,6 +13,7 @@ export interface IEscrow {
   escrow_account_pubkey: string;
   escrow_amount: number;
   expire_date: number;
+  index: number;
   completed: number;
 }
 
@@ -20,9 +21,10 @@ const escrowSchema = new Schema<IEscrow>(
   {
     escrow_amount: Number,
     expire_date: Number,
+    index: Number,
     input_tx_hash: { type: String, unique: true },
-    payout_tx_hash: { type: String, unique: true },
-    escrow_account_pubkey: { type: String, unique: true },
+    payout_tx_hash: String,
+    escrow_account_pubkey: String,
     token_pubkey: String,
     completed: Number,
     sender_account_pubkey: String,

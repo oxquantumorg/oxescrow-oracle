@@ -1,21 +1,29 @@
-import { IData, Data } from "../data.model";
+import { Data } from "../data.model";
 
-export const saveTx = async (data: IData) => {
-  await Data.create(data);
+export const initData = async () => {
+  const indexEscrow = {
+    id: 1,
+    last_block_hash:
+      "5tNpEuxEPCYed8ybT3byWGNYGM2rctF4KDQXf5A2EdEEcUuiogM8zXCZBLXuVSPGx1fKhJYy6awAkYz9t97Nnj7m",
+    escrow_count: 0,
+    wallet_count: 0,
+  };
+  return Data.create(indexEscrow);
 };
-
-// export const updateTx = async (txHash: string, payoutHash: string) => {
-//   return Data.findOneAndUpdate(
-//     { tx_hash: txHash },
-//     { payout_hash: payoutHash },
-//     { returnOriginal: false }
-//   );
-// };
 
 export const getData = async () => {
-  return (await Data.find().exec())[0];
+  let escrow = await Data.findOne({ id: 1 });
+  if (!escrow) {
+    escrow = await initData();
+  }
+
+  return escrow;
 };
 
-export const getTxByHash = async (hash: string) => {
-  return Data.findOne({ tx_hash: hash });
+export const updateData = async (data: any) => {
+  return Data.findOneAndUpdate(
+    { id: 1 },
+    { ...data },
+    { returnOriginal: false }
+  );
 };

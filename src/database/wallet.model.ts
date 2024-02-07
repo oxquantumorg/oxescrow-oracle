@@ -10,11 +10,13 @@ export interface IWallet {
   receiver_account_pubkey: string;
   receiver_token_account_pubkey: string;
   amount: number;
+  index: number;
 }
 
 const transactionSchema = new Schema<IWallet>(
   {
     amount: Number,
+    index: Number,
     tx_hash: { type: String, unique: true },
     token_pubkey: String,
     sender_pubkey: String,
