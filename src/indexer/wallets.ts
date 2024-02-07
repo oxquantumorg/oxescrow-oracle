@@ -68,3 +68,5 @@ import {
     console.log(error);
   }
   
+
+export default async () => {}
