@@ -4,13 +4,13 @@ export interface IBlock {
   created_at: Date;
   updated_at: Date;
   signature: string;
-  block_time: number;
+  block_time: Date;
 }
 
 const blockSchema = new Schema<IBlock>(
   {
     signature: { type: String, unique: true },
-    block_time: Number,
+    block_time: Date,
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );

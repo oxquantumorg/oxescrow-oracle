@@ -1,4 +1,4 @@
-import { Connection, ParsedInstruction, PublicKey } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import {
   closeSync,
   getData,
@@ -13,11 +13,11 @@ export default async () => {
   try {
     const data = await getData();
     if (!data) {
-      console.log("no data");
+      console.log("- No data");
       return;
     }
     if (data.working === 1) {
-      console.log("working...");
+      console.log("- Working...");
       return;
     }
     await startWork(1);
@@ -32,7 +32,7 @@ export default async () => {
 
     if (blocks.length === 0) {
       await closeSync();
-      console.log("Index complete.....");
+      console.log("- Index complete.....");
       await startWork(0);
       return;
     }
@@ -49,13 +49,13 @@ export default async () => {
       const blockExists = await findBlock(block.signature);
       if (blockExists) {
         await closeSync();
-        console.log("Duplicate block ==> Index complete.....");
+        console.log("- Index complete.....");
         await startWork(0);
         return;
       }
       await createBlock({
         signature: block.signature,
-        block_time: block.blockTime,
+        block_time: block.blockTime * 1000,
       });
 
       console.log("------------");

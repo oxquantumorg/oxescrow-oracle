@@ -12,9 +12,18 @@ export const updateEscrow = async (pubKey: string, data: any) => {
   );
 };
 
-export const getEscrows = async (data: any) => {
+export const fetchEscrows = async (data: any) => {
   return Escrow.find(data);
 };
+
+// export const fetchEscrowsSort = async (data: any, block_time: number) => {
+//   return Escrow.find({
+//     ...data,
+//     created_at: {
+//       $gte: block_time,
+//     },
+//   });
+// };
 
 export const getEscrowByPubKey = async (pubKey: string) => {
   return Escrow.findOne({ escrow_account_pubkey: pubKey });

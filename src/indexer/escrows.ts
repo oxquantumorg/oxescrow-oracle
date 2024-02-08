@@ -1,5 +1,9 @@
 import { Connection, ParsedInstruction, PublicKey } from "@solana/web3.js";
-import { getData, updateData } from "../database/wrappers/dataWrapper";
+import {
+  getData,
+  startWorkEscrow,
+  updateData,
+} from "../database/wrappers/dataWrapper";
 import bs58 from "bs58";
 import config from "../config";
 import {
@@ -7,34 +11,37 @@ import {
   saveEscrow,
   updateEscrow,
 } from "../database/wrappers/escrowWrapper";
-const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+import { fetchBlocks } from "../database/wrappers/blockWrapper";
+const connection = new Connection(config.rpc, "confirmed");
 
 export default async () => {
   try {
     const data = await getData();
     if (!data) {
-      console.log("no data");
+      console.log("- No data");
+      return;
+    }
+    if (data.working_escrow === 1) {
+      console.log("- Working escrow...");
+      return;
+    }
+    await startWorkEscrow(1);
+
+    let lastBlockTime = data.last_block_time;
+    const blocks = await fetchBlocks(lastBlockTime);
+
+    if (blocks.length === 0) {
+      console.log("- No new blocks.....");
+      await startWorkEscrow(0);
       return;
     }
 
-    const programPubkey = config.programPubkey;
-    let before = data.last_block_hash;
-    const options = { limit: 2, before };
-    const co = await connection.getTransactionCount()
-    console.log(co);
-    
-    const blocks = await connection.getConfirmedSignaturesForAddress2(
-      programPubkey,
-      options
-    );
-    before = blocks[blocks.length - 1].signature;
+    lastBlockTime = blocks[blocks.length - 1].created_at;
     await updateData({
-      last_block_hash: before,
+      last_block_time: lastBlockTime,
     });
-    console.log(blocks);
 
-    return;
-
+    const programPubkey = config.programPubkey;
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i];
       const blockHash = block.signature;
@@ -44,10 +51,6 @@ export default async () => {
       for (let j = 0; j < txs.length; j++) {
         const tx = txs[j];
         if (tx.programId.equals(programPubkey)) {
-          // console.log("---");
-          // console.log("lastBlockHash", lastBlockHash);
-          // console.log("---");
-          // console.log("blockHash", blockHash);
           const txIX: any = tx as ParsedInstruction;
           const accounts = txIX.accounts;
           const escrowPubKey: string = accounts[3].toString();
@@ -69,12 +72,13 @@ export default async () => {
             receiver_token_account_pubkey: "",
             escrow_account_pubkey: "",
             escrow_amount: amount,
-            expire_date: block.blockTime + 300,
+            expire_date: new Date(block.block_time).getUTCSeconds() + 300,
             completed: call,
             index: escrow_count,
           };
 
           const escrow = await getEscrowByPubKey(escrowPubKey);
+          let logged = false;
           if (!escrow && call === 0) {
             storeData.input_tx_hash = blockHash;
             storeData.sender_account_pubkey = accounts[0].toString();
@@ -85,6 +89,8 @@ export default async () => {
             await updateData({
               escrow_count: escrow_count + 1,
             });
+            console.log("- Escrow Created");
+            logged = true;
           }
 
           if (escrow && call === 1) {
@@ -94,24 +100,26 @@ export default async () => {
             updateEscrowData.completed = 1;
             updateEscrowData.payout_tx_hash = blockHash;
             await updateEscrow(escrowPubKey, updateEscrowData);
-            console.log("Escrow Completed");
-            console.log("---");
+            console.log("- Escrow Completed");
+            logged = true;
           }
 
           await updateData({
             last_block_hash: blockHash,
           });
-          console.log("------");
-          console.log("call", call);
-          console.log("amount", amount);
-          console.log("escrowPubKey", escrowPubKey);
-
-          console.log("End.....");
+          if (logged) {
+            console.log("- BlockHash", blockHash);
+            console.log("- Call", call);
+            console.log("- Amount", amount);
+            console.log("- EscrowPubKey", escrowPubKey);
+          }
+          console.log("- End Escrow Index.....");
         }
       }
     }
-    console.log("Completed");
+    await startWorkEscrow(0);
   } catch (error) {
     console.log(error);
+    await startWorkEscrow(0);
   }
 };
