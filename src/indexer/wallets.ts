@@ -56,17 +56,17 @@ import {
     console.log(res);
   };
   
-  try {
-    // checkTx(txHash);
-    fetchTx()
-    // const subscription = connection.onLogs(
-    //   targetAddress,
-    //   parseTokenDepositLog,
-    //   commitment
-    // );
-  } catch (error) {
-    console.log(error);
-  }
+  // try {
+  //   // checkTx(txHash);
+  //   // fetchTx()
+  //   // const subscription = connection.onLogs(
+  //   //   targetAddress,
+  //   //   parseTokenDepositLog,
+  //   //   commitment
+  //   // );
+  // } catch (error) {
+  //   console.log(error);
+  // }
   
 
 export default async () => {}

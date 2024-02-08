@@ -3,10 +3,12 @@ import { Data } from "../data.model";
 export const initData = async () => {
   const indexEscrow = {
     id: 1,
-    last_block_hash:
-      "5tNpEuxEPCYed8ybT3byWGNYGM2rctF4KDQXf5A2EdEEcUuiogM8zXCZBLXuVSPGx1fKhJYy6awAkYz9t97Nnj7m",
+    last_block_hash: undefined,
+    block_count: 0,
     escrow_count: 0,
     wallet_count: 0,
+    synced: 0,
+    working: 0,
   };
   return Data.create(indexEscrow);
 };
@@ -24,6 +26,25 @@ export const updateData = async (data: any) => {
   return Data.findOneAndUpdate(
     { id: 1 },
     { ...data },
+    { returnOriginal: false }
+  );
+};
+
+export const closeSync = async () => {
+  const data = await Data.findOneAndUpdate(
+    { id: 1 },
+    { synced: 1 },
+    { returnOriginal: false }
+  );
+
+  data.last_block_hash = undefined;
+  await data.save();
+};
+
+export const startWork = async (status: number) => {
+  return await Data.findOneAndUpdate(
+    { id: 1 },
+    { working: status },
     { returnOriginal: false }
   );
 };

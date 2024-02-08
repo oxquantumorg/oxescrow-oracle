@@ -12,8 +12,8 @@ export const updateEscrow = async (pubKey: string, data: any) => {
   );
 };
 
-export const getTxs = async () => {
-  return Escrow.find();
+export const getEscrows = async (data: any) => {
+  return Escrow.find(data);
 };
 
 export const getEscrowByPubKey = async (pubKey: string) => {
