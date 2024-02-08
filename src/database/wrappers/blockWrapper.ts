@@ -8,14 +8,14 @@ export const findBlock = async (sig: string) => {
   return Block.findOne({ signature: sig });
 };
 
-export const fetchBlocks = async (last_timestamp: Date) => {
-  if (!last_timestamp) {
+export const fetchBlocks = async (last_block_index: number) => {
+  if (!last_block_index) {
     return Block.find().sort({ created_at: -1 }).limit(20);
   }
 
   return Block.find({
-    created_at: {
-      $lte: last_timestamp,
+    block_index: {
+      $lte: last_block_index,
     },
   })
     .sort({ created_at: -1 })

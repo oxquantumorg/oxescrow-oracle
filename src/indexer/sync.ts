@@ -49,13 +49,16 @@ export default async () => {
       const blockExists = await findBlock(block.signature);
       if (blockExists) {
         await closeSync();
-        console.log("- Index complete.....");
+        console.log("- Duplicate Block Index complete.....");
+        console.log("-", block.signature);
+        console.log(blockExists);
         await startWork(0);
         return;
       }
       await createBlock({
         signature: block.signature,
         block_time: block.blockTime * 1000,
+        block_index: Date.now(),
       });
 
       console.log("------------");

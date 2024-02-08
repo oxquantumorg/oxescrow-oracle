@@ -3,9 +3,9 @@ import { model, Schema } from "mongoose";
 export interface IData {
   created_at: Date;
   updated_at: Date;
-  id: string;
+  id: number;
   last_block_hash: string | undefined;
-  last_block_time: Date;
+  last_block_index: number;
   synced: number;
   working: number;
   working_escrow: number;
@@ -16,9 +16,9 @@ export interface IData {
 
 const dataSchema = new Schema<IData>(
   {
-    id: String,
+    id: { type: Number, unique: true },
     last_block_hash: String || undefined,
-    last_block_time: Date,
+    last_block_index: Number,
     synced: Number,
     working: Number,
     working_escrow: Number,

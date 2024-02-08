@@ -1,4 +1,4 @@
-import { Connection, ParsedInstruction, PublicKey } from "@solana/web3.js";
+import { Connection, ParsedInstruction } from "@solana/web3.js";
 import {
   getData,
   startWorkEscrow,
@@ -21,14 +21,17 @@ export default async () => {
       console.log("- No data");
       return;
     }
+    if (data.synced === 0) {
+      console.log("- Syncing blocks...");
+      return;
+    }
     if (data.working_escrow === 1) {
       console.log("- Working escrow...");
       return;
     }
     await startWorkEscrow(1);
 
-    let lastBlockTime = data.last_block_time;
-    const blocks = await fetchBlocks(lastBlockTime);
+    const blocks = await fetchBlocks(data.last_block_index);
 
     if (blocks.length === 0) {
       console.log("- No new blocks.....");
@@ -36,9 +39,8 @@ export default async () => {
       return;
     }
 
-    lastBlockTime = blocks[blocks.length - 1].created_at;
     await updateData({
-      last_block_time: lastBlockTime,
+      last_block_index: blocks[blocks.length - 1].block_index,
     });
 
     const programPubkey = config.programPubkey;
@@ -104,9 +106,6 @@ export default async () => {
             logged = true;
           }
 
-          await updateData({
-            last_block_hash: blockHash,
-          });
           if (logged) {
             console.log("- BlockHash", blockHash);
             console.log("- Call", call);
