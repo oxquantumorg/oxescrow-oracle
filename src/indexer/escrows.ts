@@ -29,10 +29,11 @@ export default async () => {
       console.log("- Working escrow...");
       return;
     }
+
     await startWorkEscrow(1);
+    console.log("- Escrow index start...");
 
-    const blocks = await fetchBlocks(data.last_block_index);
-
+    const blocks = await fetchBlocks(data.prev_block_index, data.reverse);
     if (blocks.length === 0) {
       console.log("- No new blocks.....");
       await startWorkEscrow(0);
@@ -40,16 +41,38 @@ export default async () => {
     }
 
     await updateData({
-      last_block_index: blocks[blocks.length - 1].block_index,
+      prev_block_index: blocks[blocks.length - 1].block_index,
     });
 
     const programPubkey = config.programPubkey;
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i];
+      console.log(block);
+
       const blockHash = block.signature;
       const res = await connection.getParsedTransaction(blockHash);
+      if (!res) {
+        await updateData({
+          prev_block_index: block.block_index,
+        });
+        console.log("- Empty block");
+        console.log("-", block.signature);
+        await startWorkEscrow(0);
+        return;
+      }
       const txs = res.transaction.message.instructions;
 
+      if (block.signature === data.entry_block_hash && data.reverse === 0) {
+        console.log("- Escrow taking reverse now");
+        console.log("-", block.signature);
+
+        await updateData({
+          reverse: 1,
+          prev_block_index: block.block_index,
+        });
+      }
+
+      let escrow_count = (await getData()).escrow_count || 0;
       for (let j = 0; j < txs.length; j++) {
         const tx = txs[j];
         if (tx.programId.equals(programPubkey)) {
@@ -61,8 +84,6 @@ export default async () => {
           const call = dataAsUint8Arr[0];
           const amount = dataAsUint8Arr[1];
           const mint = config.mint.toString();
-
-          const escrow_count = (await getData()).escrow_count;
 
           const storeData = {
             input_tx_hash: "",
@@ -88,9 +109,7 @@ export default async () => {
             storeData.temp_token_account_pubkey = accounts[2].toString();
             storeData.escrow_account_pubkey = escrowPubKey;
             await saveEscrow(storeData);
-            await updateData({
-              escrow_count: escrow_count + 1,
-            });
+            escrow_count += 1;
             console.log("- Escrow Created");
             logged = true;
           }
@@ -113,10 +132,14 @@ export default async () => {
             console.log("- EscrowPubKey", escrowPubKey);
           }
           console.log("- End Escrow Index.....");
+        } else {
+          console.log("- Escrow empty blocks");
         }
       }
+      await updateData({ escrow_count });
     }
     await startWorkEscrow(0);
+    console.log("- Escrow index end...");
   } catch (error) {
     console.log(error);
     await startWorkEscrow(0);

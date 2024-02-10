@@ -8,16 +8,27 @@ export const findBlock = async (sig: string) => {
   return Block.findOne({ signature: sig });
 };
 
-export const fetchBlocks = async (last_block_index: number) => {
-  if (!last_block_index) {
-    return Block.find().sort({ created_at: -1 }).limit(20);
+export const fetchBlocks = async (
+  prev_block_index: number,
+  reverse: number
+) => {
+  console.log(prev_block_index, reverse);
+  
+  if (reverse === 1) {
+    return Block.find({
+      block_index: {
+        $lte: prev_block_index,
+      },
+    })
+      .sort({ block_index: -1 })
+      .limit(10);
   }
 
   return Block.find({
     block_index: {
-      $lte: last_block_index,
+      $gte: prev_block_index,
     },
   })
-    .sort({ created_at: -1 })
-    .limit(20);
+    .sort({ block_index: 1 })
+    .limit(10);
 };

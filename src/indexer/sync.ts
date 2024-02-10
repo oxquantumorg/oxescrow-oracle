@@ -1,7 +1,7 @@
 import { Connection } from "@solana/web3.js";
 import {
   closeSync,
-  getData,
+  getOrCreateData,
   startWork,
   updateData,
 } from "../database/wrappers/dataWrapper";
@@ -11,7 +11,7 @@ const connection = new Connection(config.rpc, "confirmed");
 
 export default async () => {
   try {
-    const data = await getData();
+    const data = await getOrCreateData();
     if (!data) {
       console.log("- No data");
       return;
@@ -23,7 +23,7 @@ export default async () => {
     await startWork(1);
 
     const programPubkey = config.programPubkey;
-    let before = data.last_block_hash;
+    let before = data.prev_block_hash;
     const options = { limit: 10, before };
     const blocks = await connection.getConfirmedSignaturesForAddress2(
       programPubkey,
@@ -40,18 +40,29 @@ export default async () => {
     before = blocks[blocks.length - 1].signature;
     let blockCount = data.block_count;
     await updateData({
-      last_block_hash: before,
+      prev_block_hash: before,
     });
+
+    if (!data.entry_block_hash) {
+      await updateData({
+        entry_block_hash: blocks[0].signature,
+      });
+    }
 
     for (let index = 0; index < blocks.length; index++) {
       const block = blocks[index];
-
       const blockExists = await findBlock(block.signature);
       if (blockExists) {
         await closeSync();
-        console.log("- Duplicate Block Index complete.....");
+        console.log("- Index completed.....");
         console.log("-", block.signature);
-        console.log(blockExists);
+        if (!data.prev_block_index) {
+          await updateData({
+            prev_block_index: blockExists.block_index,
+          });
+        }
+
+        // console.log(blockExists);
         await startWork(0);
         return;
       }

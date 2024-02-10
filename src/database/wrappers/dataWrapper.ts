@@ -3,9 +3,11 @@ import { Data } from "../data.model";
 export const initData = async () => {
   const indexEscrow = {
     id: 1,
-    last_block_hash: undefined,
+    entry_block_hash: undefined,
+    prev_block_hash: undefined,
     block_count: 0,
     escrow_count: 0,
+    reverse: 0,
     wallet_count: 0,
     synced: 0,
     working: 0,
@@ -14,13 +16,17 @@ export const initData = async () => {
   return Data.create(indexEscrow);
 };
 
-export const getData = async () => {
+export const getOrCreateData = async () => {
   let escrow = await Data.findOne({ id: 1 });
   if (!escrow) {
     escrow = await initData();
   }
 
   return escrow;
+};
+
+export const getData = async () => {
+  return Data.findOne({ id: 1 });
 };
 
 export const updateData = async (data: any) => {
@@ -38,7 +44,7 @@ export const closeSync = async () => {
     { returnOriginal: false }
   );
 
-  data.last_block_hash = undefined;
+  data.prev_block_hash = undefined;
   await data.save();
 };
 

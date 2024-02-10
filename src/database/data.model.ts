@@ -4,8 +4,10 @@ export interface IData {
   created_at: Date;
   updated_at: Date;
   id: number;
-  last_block_hash: string | undefined;
-  last_block_index: number;
+  prev_block_hash: string | undefined;
+  entry_block_hash: string | undefined;
+  reverse: number;
+  prev_block_index: number;
   synced: number;
   working: number;
   working_escrow: number;
@@ -17,8 +19,10 @@ export interface IData {
 const dataSchema = new Schema<IData>(
   {
     id: { type: Number, unique: true },
-    last_block_hash: String || undefined,
-    last_block_index: Number,
+    prev_block_hash: String || undefined,
+    entry_block_hash: String || undefined,
+    prev_block_index: Number,
+    reverse: Number,
     synced: Number,
     working: Number,
     working_escrow: Number,
