@@ -5,6 +5,7 @@ export const initData = async () => {
     id: 1,
     entry_block_hash: undefined,
     prev_block_hash: undefined,
+    prev_block_index: 0,
     block_count: 0,
     escrow_count: 0,
     reverse: 0,
@@ -44,7 +45,6 @@ export const closeSync = async () => {
     { returnOriginal: false }
   );
 
-  data.prev_block_hash = undefined;
   await data.save();
 };
 

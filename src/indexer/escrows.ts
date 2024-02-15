@@ -33,7 +33,7 @@ export default async () => {
     await startWorkEscrow(1);
     console.log("- Escrow index start...");
 
-    const blocks = await fetchBlocks(data.prev_block_index, data.reverse);
+    const blocks = await fetchBlocks(data.prev_block_index);
     if (blocks.length === 0) {
       console.log("- No new blocks.....");
       await startWorkEscrow(0);
@@ -47,8 +47,6 @@ export default async () => {
     const programPubkey = config.programPubkey;
     for (let i = 0; i < blocks.length; i++) {
       const block = blocks[i];
-      console.log(block);
-
       const blockHash = block.signature;
       const res = await connection.getParsedTransaction(blockHash);
       if (!res) {
@@ -61,16 +59,6 @@ export default async () => {
         return;
       }
       const txs = res.transaction.message.instructions;
-
-      if (block.signature === data.entry_block_hash && data.reverse === 0) {
-        console.log("- Escrow taking reverse now");
-        console.log("-", block.signature);
-
-        await updateData({
-          reverse: 1,
-          prev_block_index: block.block_index,
-        });
-      }
 
       let escrow_count = (await getData()).escrow_count || 0;
       for (let j = 0; j < txs.length; j++) {
@@ -101,7 +89,7 @@ export default async () => {
           };
 
           const escrow = await getEscrowByPubKey(escrowPubKey);
-          let logged = false;
+          let logged = 0;
           if (!escrow && call === 0) {
             storeData.input_tx_hash = blockHash;
             storeData.sender_account_pubkey = accounts[0].toString();
@@ -111,10 +99,10 @@ export default async () => {
             await saveEscrow(storeData);
             escrow_count += 1;
             console.log("- Escrow Created");
-            logged = true;
+            logged = 1;
           }
 
-          if (escrow && call === 1) {
+          if (escrow && call === 1 && !escrow.payout_tx_hash) {
             const updateEscrowData: any = {};
             updateEscrowData.receiver_token_account_pubkey =
               accounts[1].toString();
@@ -122,10 +110,10 @@ export default async () => {
             updateEscrowData.payout_tx_hash = blockHash;
             await updateEscrow(escrowPubKey, updateEscrowData);
             console.log("- Escrow Completed");
-            logged = true;
+            logged = 1;
           }
 
-          if (logged) {
+          if (logged === 1) {
             console.log("- BlockHash", blockHash);
             console.log("- Call", call);
             console.log("- Amount", amount);

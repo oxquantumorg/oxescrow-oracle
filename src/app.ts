@@ -1,6 +1,5 @@
 require("./config/global");
 import { fetchEscrows } from "./database/wrappers/escrowWrapper";
-// import { Connection } from "@solana/web3.js";
 import { escrowIndex, syncIndex } from "./indexer";
 const cron = require("node-cron");
 const express = require("express");
@@ -9,8 +8,6 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 const port = 3004;
-
-// const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
 cron.schedule("*/10 * * * * *", () => {
   syncIndex();
