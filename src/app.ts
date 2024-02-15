@@ -1,6 +1,7 @@
 require("./config/global");
 import { fetchEscrows } from "./database/wrappers/escrowWrapper";
 import { escrowIndex, syncIndex } from "./indexer";
+import { createEscrow } from "./libs/createEscrow";
 const cron = require("node-cron");
 const express = require("express");
 const cors = require("cors");
@@ -15,6 +16,14 @@ cron.schedule("*/10 * * * * *", () => {
 
 cron.schedule("*/10 * * * * *", () => {
   escrowIndex();
+});
+
+app.get("/create_escrow", async (req, res) => {
+  const amount = 0;
+  const receiverAcc = "EHtmN2mYQsaUXgu59kLRNCLsPLpi4rsnFPGHSjJLsTEg";
+  const data = await createEscrow(amount, receiverAcc);
+  console.log(data);
+  res.send({ data });
 });
 
 app.get("/", async (req, res) => {

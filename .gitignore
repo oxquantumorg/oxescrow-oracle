@@ -1,3 +1,5 @@
 node_modules
 dist
 .env
+src/config/admin.key.json
+src/config/admin.pub.json
