@@ -38,6 +38,4 @@ app.get("/getescrows", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Escrow server listening on port ${port}`);
-  console.log(process.env.MONGO_URL);
-  console.log(process.env.ORACLE_PUB_KEY);
 });
