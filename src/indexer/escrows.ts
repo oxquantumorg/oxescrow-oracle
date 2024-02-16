@@ -130,6 +130,6 @@ export default async () => {
     console.log("- Escrow index end...");
   } catch (error) {
     console.log(error);
-    await startWorkEscrow(0);
+    startWorkEscrow(0);
   }
 };
