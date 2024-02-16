@@ -4,7 +4,6 @@ WORKDIR ./
 
 COPY package.json yarn.lock ./
 COPY . .
-RUN rm ./.env.development
 
 ENV PATH ./node_modules/.bin:$PATH
 
