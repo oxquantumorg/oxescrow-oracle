@@ -11,6 +11,8 @@ import { startWork, startWorkEscrow } from "../database/wrappers/dataWrapper";
 
     await Promise.all([startWorkEscrow(0), startWork(0)]);
   } catch (err) {
-    throw err;
+    console.log(err);
+    
+    // throw err;
   }
 })();
