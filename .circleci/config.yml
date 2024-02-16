@@ -8,7 +8,7 @@ jobs:
       deploy-file:
         type: string
     docker:
-      - image: cimg/node:16.15.0
+      - image: cimg/node:16.20.1
       - image: arvindr226/alpine-ssh
     steps:
       - checkout
