@@ -8,7 +8,7 @@ const cors = require("cors");
 
 const app = express();
 app.use(cors());
-const port = 3004;
+const port = 4001;
 
 cron.schedule("*/10 * * * * *", () => {
   syncIndex();
