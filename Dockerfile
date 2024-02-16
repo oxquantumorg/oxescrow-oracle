@@ -1,4 +1,4 @@
-FROM node:21-slim AS BUILD_IMAGE
+FROM node:16.20.1 AS BUILD_IMAGE
 
 WORKDIR ./
 
