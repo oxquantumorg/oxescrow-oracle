@@ -13,7 +13,7 @@ export const updateEscrow = async (pubKey: string, data: any) => {
 };
 
 export const fetchEscrows = async (data: any) => {
-  return Escrow.find(data);
+  return Escrow.find(data).sort({ created_at: 1 });
 };
 
 // export const fetchEscrowsSort = async (data: any, block_time: number) => {
