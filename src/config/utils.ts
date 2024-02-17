@@ -1,5 +1,5 @@
+require("dotenv").config();
 import { Keypair, PublicKey } from "@solana/web3.js";
-import * as fs from "fs";
 const BufferLayout = require("buffer-layout");
 
 export const logError = (msg: string) => {
@@ -16,12 +16,8 @@ const uint64 = (property = "uint64") => {
 
 export const getAdminAcc = () => {
   return new Keypair({
-    publicKey: new PublicKey(
-      JSON.parse(fs.readFileSync(`./admin.pub.json`) as unknown as string)
-    ).toBytes(),
-    secretKey: Uint8Array.from(
-      JSON.parse(fs.readFileSync(`./admin.key.json`) as unknown as string)
-    ),
+    publicKey: new PublicKey(process.env.ORACLE_PUB_KEY).toBytes(),
+    secretKey: Uint8Array.from(JSON.parse(process.env.ORACLE_PRIV_KEY)),
   });
 };
 

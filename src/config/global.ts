@@ -6,12 +6,8 @@ import { startWork, startWorkEscrow } from "../database/wrappers/dataWrapper";
   try {
     mongoose.set("strictQuery", true);
     const url = process.env.MONGO_URL || "";
-    console.log('url', url);
-    console.log(process.env.MONGO_URL);
-    console.log(process.env.ORACLE_PUB_KEY);
-    
     await mongoose.connect(url);
-    console.log("database connected successfully");
+    console.log("DB connected!!!");
 
     await Promise.all([startWorkEscrow(0), startWork(0)]);
   } catch (err) {
