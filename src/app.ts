@@ -19,9 +19,9 @@ cron.schedule("*/10 * * * * *", () => {
 });
 
 app.get("/create_escrow", async (req, res) => {
-  const amount = 0;
-  const receiverAcc = "EHtmN2mYQsaUXgu59kLRNCLsPLpi4rsnFPGHSjJLsTEg";
-  const data = await createEscrow(amount, receiverAcc);
+  const receiverPubKey = req.query.receiverPubKey;
+  const amount = req.query.amount;
+  const data = await createEscrow(amount, receiverPubKey);
   console.log(data);
   res.send({ data });
 });
