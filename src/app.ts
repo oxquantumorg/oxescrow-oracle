@@ -21,9 +21,25 @@ cron.schedule("*/10 * * * * *", () => {
 app.get("/create_escrow", async (req, res) => {
   const receiverPubKey = req.query.receiverPubKey;
   const amount = req.query.amount;
-  const data = await createEscrow(amount, receiverPubKey);
-  console.log(data);
-  res.send({ data });
+  try {
+    const escrowAcc = await createEscrow(amount, receiverPubKey);
+    const message = `✨Escrow successfully initialized. 
+    Expecting ${amount} Usdc deposit to the account ${escrowAcc}\n`;
+    return res.send({
+      isSuccess: true,
+      message,
+      data: {
+        amount,
+        escrowAcc,
+      },
+    });
+  } catch (error) {
+    return res.send({
+      isSuccess: false,
+      message: error.message,
+      data: null,
+    });
+  }
 });
 
 app.get("/", async (req, res) => {

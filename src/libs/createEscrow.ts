@@ -96,7 +96,7 @@ export const createEscrow = async (amount: number, receiverPubKey: string) => {
   const escrowAccount = await connection.getAccountInfo(escrowAcc.publicKey);
 
   if (escrowAccount === null || escrowAccount.data.length === 0) {
-    return "Escrow state account has not been initialized properly";
+    new Error("Escrow state account has not been initialized properly");
   }
 
   const encodedEscrowState = escrowAccount.data;
@@ -105,13 +105,15 @@ export const createEscrow = async (amount: number, receiverPubKey: string) => {
   console.log("Escrow state:", decodedEscrowState);
 
   if (!decodedEscrowState.isInitialized) {
-    return "Escrow state initialization flag has not been set";
+    new Error("Escrow state initialization flag has not been set");
   }
 
   if (
     !new PublicKey(decodedEscrowState.initializerPubkey).equals(creatorPubKey)
   ) {
-    return "InitializerPubkey has not been set correctly / not been set to Alice's public key";
+    throw new Error(
+      "InitializerPubkey has not been set correctly / not been set to Alice's public key"
+    );
   }
 
   if (
@@ -119,7 +121,10 @@ export const createEscrow = async (amount: number, receiverPubKey: string) => {
       tempMintAcc.publicKey
     )
   ) {
-    return "initializerTempTokenAccountPubkey has not been set correctly / not been set to temp Usdc token account public key";
+    throw new Error(
+      "initializerTempTokenAccountPubkey has not been set correctly or not been set to temp Usdc token account public key"
+    );
   }
-  return `✨Escrow successfully initialized. Expecting ${amount}Usdc deposit to the account ${escrowAcc.publicKey.toString()}\n`;
+
+  return escrowAcc.publicKey.toString();
 };
