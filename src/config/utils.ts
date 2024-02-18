@@ -23,6 +23,7 @@ export const getAdminAcc = () => {
 
 export const ESCROW_ACCOUNT_DATA_LAYOUT = BufferLayout.struct([
   BufferLayout.u8("isInitialized"),
+  publicKey("callerPubkey"),
   publicKey("initializerPubkey"),
   publicKey("receiverAccountPubkey"),
   publicKey("initializerTempTokenAccountPubkey"),
@@ -32,6 +33,7 @@ export const ESCROW_ACCOUNT_DATA_LAYOUT = BufferLayout.struct([
 
 export interface EscrowLayout {
   isInitialized: number;
+  callerPubkey: Uint8Array;
   initializerPubkey: Uint8Array;
   receiverAccountPubkey: Uint8Array;
   initializerTempTokenAccountPubkey: Uint8Array;

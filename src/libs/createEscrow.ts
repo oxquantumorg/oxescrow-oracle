@@ -26,8 +26,9 @@ export const createEscrow = async (
   const escrowProgramId = config.programPubkey;
   const usdcMintPubKey = config.mint;
 
-  const creatorAcc = getAdminAcc();
-  const creatorPubKey = creatorAcc.publicKey;
+  const callerAcc = getAdminAcc();
+  const initializerPubKey = new PublicKey(senderPublicKey);
+  const callerPubKey = callerAcc.publicKey;
   const tempMintAcc = new Keypair();
 
   const tempTokenAccountIX = SystemProgram.createAccount({
@@ -36,13 +37,13 @@ export const createEscrow = async (
     lamports: await connection.getMinimumBalanceForRentExemption(
       AccountLayout.span
     ),
-    fromPubkey: creatorPubKey,
+    fromPubkey: callerPubKey,
     newAccountPubkey: tempMintAcc.publicKey,
   });
   const initTempAccountIX = createInitializeAccountInstruction(
     tempMintAcc.publicKey,
     usdcMintPubKey,
-    creatorPubKey
+    callerPubKey
   );
 
   const escrowAcc = new Keypair();
@@ -51,7 +52,7 @@ export const createEscrow = async (
     lamports: await connection.getMinimumBalanceForRentExemption(
       ESCROW_ACCOUNT_DATA_LAYOUT.span
     ),
-    fromPubkey: creatorPubKey,
+    fromPubkey: callerPubKey,
     newAccountPubkey: escrowAcc.publicKey,
     programId: escrowProgramId,
   });
@@ -60,7 +61,7 @@ export const createEscrow = async (
     programId: escrowProgramId,
     keys: [
       {
-        pubkey: new PublicKey(senderPublicKey),
+        pubkey: initializerPubKey,
         isSigner: false,
         isWritable: false,
       },
@@ -77,7 +78,7 @@ export const createEscrow = async (
       { pubkey: escrowAcc.publicKey, isSigner: false, isWritable: true },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-      { pubkey: creatorPubKey, isSigner: true, isWritable: false },
+      { pubkey: callerPubKey, isSigner: true, isWritable: false },
     ],
     data: Buffer.from(Uint8Array.of(0, ...new BN(amount).toArray("le", 1))),
   });
@@ -90,7 +91,7 @@ export const createEscrow = async (
   );
 
   const res = await sendAndConfirmTransaction(connection, tx, [
-    creatorAcc,
+    callerAcc,
     tempMintAcc,
     escrowAcc,
   ]);
@@ -112,6 +113,10 @@ export const createEscrow = async (
   if (!decodedEscrowState.isInitialized) {
     new Error("Escrow state initialization flag has not been set");
   }
+
+  console.log(decodedEscrowState.initializerPubkey);
+  console.log(senderPublicKey);
+  console.log("senderPublicKey");
 
   if (
     !new PublicKey(decodedEscrowState.initializerPubkey).equals(
