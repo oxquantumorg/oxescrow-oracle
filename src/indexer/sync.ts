@@ -1,11 +1,9 @@
-import { Connection } from "@solana/web3.js";
 import {
   closeSync,
   getOrCreateData,
   startWork,
   updateData,
 } from "../database/wrappers/dataWrapper";
-import config from "../config";
 import { createBlock, findBlock } from "../database/wrappers/blockWrapper";
 import { fetchOnChainBlocks } from "../libs/fetchOnChainBlocks";
 
@@ -45,7 +43,7 @@ export default async () => {
         console.log("- Duplicate block.....");
         console.log("-", block.signature);
         await startWork(0);
-        continue;
+        break;
       }
 
       await createBlock({
