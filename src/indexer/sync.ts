@@ -29,11 +29,6 @@ export default async () => {
       return;
     }
 
-    before = blocks[blocks.length - 1].signature;
-    await updateData({
-      prev_block_hash: before,
-    });
-
     let blockCount = Number(data.block_count);
     for (let index = 0; index < blocks.length; index++) {
       const block = blocks[index];
@@ -46,6 +41,10 @@ export default async () => {
         break;
       }
 
+      await updateData({
+        prev_block_hash: block.signature,
+      });
+  
       await createBlock({
         signature: block.signature,
         block_time: block.blockTime * 1000,
