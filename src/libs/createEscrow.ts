@@ -114,7 +114,9 @@ export const createEscrow = async (
   }
 
   if (
-    !new PublicKey(decodedEscrowState.initializerPubkey).equals(creatorPubKey)
+    !new PublicKey(decodedEscrowState.initializerPubkey).equals(
+      new PublicKey(senderPublicKey)
+    )
   ) {
     throw new Error(
       "InitializerPubkey has not been set correctly / not been set to Alice's public key"
