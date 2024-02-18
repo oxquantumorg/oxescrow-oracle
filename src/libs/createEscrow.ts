@@ -17,7 +17,11 @@ const {
 } = require("@solana/web3.js");
 const BN = require("bn.js");
 
-export const createEscrow = async (amount: number, senderPublicKey: string, receiverPubKey: string) => {
+export const createEscrow = async (
+  amount: number,
+  senderPublicKey: string,
+  receiverPubKey: string
+) => {
   const connection = await getConnection();
   const escrowProgramId = config.programPubkey;
   const usdcMintPubKey = config.mint;
