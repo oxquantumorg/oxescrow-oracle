@@ -21,6 +21,7 @@ export default async () => {
     await startWork(1);
 
     let before = data.prev_block_hash;
+    // A call to the function that picks up all new transaction.
     const blocks = await fetchOnChainBlocks(before);
 
     if (blocks.length === 0) {

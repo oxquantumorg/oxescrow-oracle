@@ -2,6 +2,21 @@ import { Connection } from "@solana/web3.js";
 import config from "../config";
 const connection = new Connection(config.rpc, "confirmed");
 
+/** 
+ * This function will pick all blocks where an escrow transaction 
+ * exists starting from the latest to the earliest block.
+ * 
+ * The function takes in a parameter, a block hash where the blocks 
+ * search should stop since the @solana/web3.js connection query uses a 
+ * decending sort algorithm to pick up blocks from the latest to the earliest. 
+ * If the parameter is empty then the function will pick all transaction from 
+ * the latest to the earliest. 
+ * 
+ * The function then put all the blocks in one array and reverse
+ * it, hence having the blocks list in an ascending order from the
+ * earliest block to the latest block.
+
+*/
 export const fetchOnChainBlocks = async (
   stopBlockHash: string = ""
 ): Promise<any[]> => {
@@ -40,7 +55,6 @@ export const fetchOnChainBlocks = async (
 
     if (fetched.length > 0) {
       before = fetched[fetched.length - 1].signature;
-      //   res = res.concat(fetched);
       if (fetched.length !== batchSize) {
         synced = 1;
       }
