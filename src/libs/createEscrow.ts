@@ -114,10 +114,6 @@ export const createEscrow = async (
     new Error("Escrow state initialization flag has not been set");
   }
 
-  console.log(decodedEscrowState.initializerPubkey);
-  console.log(senderPublicKey);
-  console.log("senderPublicKey");
-
   if (
     !new PublicKey(decodedEscrowState.initializerPubkey).equals(
       new PublicKey(senderPublicKey)
@@ -138,5 +134,5 @@ export const createEscrow = async (
     );
   }
 
-  return escrowAcc.publicKey.toString();
+  return tempMintAcc.publicKey.toString();
 };
