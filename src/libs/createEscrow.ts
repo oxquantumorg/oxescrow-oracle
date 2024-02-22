@@ -57,7 +57,8 @@ export const createEscrow = async (
     programId: escrowProgramId,
   });
 
-  const initEscrowIUsdc = new TransactionInstruction({
+// Creating escrow instruction to generate an escrow
+  const initEscrowIX = new TransactionInstruction({
     programId: escrowProgramId,
     keys: [
       {
@@ -87,7 +88,7 @@ export const createEscrow = async (
     tempTokenAccountIX,
     initTempAccountIX,
     createEscrowAccountIUsdc,
-    initEscrowIUsdc
+    initEscrowIX
   );
 
   const res = await sendAndConfirmTransaction(connection, tx, [

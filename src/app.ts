@@ -18,6 +18,7 @@ cron.schedule("*/10 * * * * *", () => {
   escrowIndex();
 });
 
+// Exposes endpoint for creating escrow
 app.get("/create_escrow", async (req, res) => {
   const receiverPubKey = req.query.receiverPubKey;
   const senderPublicKey = req.query.senderPublicKey;
