@@ -31,6 +31,7 @@ export const createEscrow = async (
   const callerPubKey = callerAcc.publicKey;
   const tempMintAcc = new Keypair();
 
+// Creating temporary token account instruction
   const tempTokenAccountIX = SystemProgram.createAccount({
     programId: TOKEN_PROGRAM_ID,
     space: AccountLayout.span,
@@ -74,7 +75,7 @@ export const createEscrow = async (
       {
         pubkey: tempMintAcc.publicKey,
         isSigner: false,
-        isWritable: true,
+        isWritable: true, // make temporary account writable
       },
       { pubkey: escrowAcc.publicKey, isSigner: false, isWritable: true },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
