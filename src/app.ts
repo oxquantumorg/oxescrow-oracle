@@ -29,8 +29,8 @@ app.get("/create_escrow", async (req, res) => {
       senderPublicKey,
       receiverPubKey
     );
-    const message = `✨Escrow successfully initialized. 
-    Expecting ${amount} Usdc deposit to the account ${escrowAcc}\n`;
+    const message = `Escrow successfully initialized. 
+    Expecting ${amount} token deposit to the account ${escrowAcc}\n`;
     return res.send({
       isSuccess: true,
       message,
