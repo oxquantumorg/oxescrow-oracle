@@ -6,7 +6,7 @@ export interface IEscrow {
   input_tx_hash: string;
   payout_tx_hash: string;
   token_pubkey: string;
-  sender_account_pubkey: string;
+  initializer_account_pubkey: string;
   temp_token_account_pubkey: string;
   receiver_account_pubkey: string;
   receiver_token_account_pubkey: string;
@@ -27,7 +27,7 @@ const escrowSchema = new Schema<IEscrow>(
     escrow_account_pubkey: String,
     token_pubkey: String,
     completed: Number,
-    sender_account_pubkey: String,
+    initializer_account_pubkey: String,
     temp_token_account_pubkey: String,
     receiver_account_pubkey: String,
     receiver_token_account_pubkey: String,

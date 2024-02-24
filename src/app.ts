@@ -54,7 +54,7 @@ app.get("/", async (req, res) => {
 
 app.get("/getescrows", async (req, res) => {
   const publicKey = req.query.publicKey;
-  const data = await fetchEscrows({ sender_account_pubkey: publicKey });
+  const data = await fetchEscrows({ initializer_account_pubkey: publicKey });
   res.send(data);
 });
 

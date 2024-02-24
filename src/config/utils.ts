@@ -21,6 +21,12 @@ export const getAdminAcc = () => {
   });
 };
 
+export const getTokenBalance = async (pubkey: PublicKey, connection) => {
+  return parseInt(
+    (await connection.getTokenAccountBalance(pubkey)).value.amount
+  );
+};
+
 export const ESCROW_ACCOUNT_DATA_LAYOUT = BufferLayout.struct([
   BufferLayout.u8("isInitialized"),
   publicKey("callerPubkey"),
