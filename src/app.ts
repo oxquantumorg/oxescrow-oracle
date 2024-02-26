@@ -1,7 +1,11 @@
 require("./config/global");
-import { fetchEscrows } from "./database/wrappers/escrowWrapper";
-import { escrowIndex, syncIndex } from "./indexer";
+import {
+  fetchEscrows,
+  getEscrowByPubKey,
+} from "./database/wrappers/escrowWrapper";
+import { escrowIndex, releaseEscrowIndex, syncIndex } from "./indexer";
 import { createEscrow } from "./libs/createEscrow";
+import { releaseEscrow } from "./libs/releaseEscrow";
 const cron = require("node-cron");
 const express = require("express");
 const cors = require("cors");
@@ -16,6 +20,10 @@ cron.schedule("*/10 * * * * *", () => {
 
 cron.schedule("*/10 * * * * *", () => {
   escrowIndex();
+});
+
+cron.schedule("*/10 * * * * *", () => {
+  releaseEscrowIndex();
 });
 
 // Exposes endpoint for creating escrow
@@ -55,6 +63,14 @@ app.get("/", async (req, res) => {
 app.get("/getescrows", async (req, res) => {
   const publicKey = req.query.publicKey;
   const data = await fetchEscrows({ initializer_account_pubkey: publicKey });
+  res.send(data);
+});
+
+app.get("/releaseescrow", async (req, res) => {
+  const publicKey = req.query.publicKey;
+  const escrow = await getEscrowByPubKey(publicKey);
+  if (!escrow) return res.send({ message: "escrow not found" });
+  const data = await releaseEscrow(escrow);
   res.send(data);
 });
 

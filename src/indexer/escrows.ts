@@ -83,7 +83,7 @@ export default async () => {
             receiver_token_account_pubkey: "",
             escrow_account_pubkey: "",
             escrow_amount: amount,
-            expire_date: new Date(block.block_time).getUTCSeconds() + 300,
+            expire_date: new Date(block.block_time).getTime() + 300,
             completed: call,
             index: escrow_count,
           };

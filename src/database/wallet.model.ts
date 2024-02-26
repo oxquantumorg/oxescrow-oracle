@@ -1,4 +1,4 @@
-import {model, Schema} from "mongoose";
+import { model, Schema } from "mongoose";
 
 export interface IWallet {
   created_at: Date;
@@ -27,4 +27,4 @@ const transactionSchema = new Schema<IWallet>(
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );
 
-export const Transaction = model<IWallet>('Transaction', transactionSchema)
+export const Transaction = model<IWallet>("Transaction", transactionSchema);

@@ -15,6 +15,7 @@ export interface IEscrow {
   expire_date: number;
   index: number;
   completed: number;
+  status: string; // waiting-deposit, pending-release, released
 }
 
 const escrowSchema = new Schema<IEscrow>(
@@ -26,6 +27,7 @@ const escrowSchema = new Schema<IEscrow>(
     payout_tx_hash: String,
     escrow_account_pubkey: String,
     token_pubkey: String,
+    status: String,
     completed: Number,
     initializer_account_pubkey: String,
     temp_token_account_pubkey: String,

@@ -12,7 +12,8 @@ export const initData = async () => {
     wallet_count: 0,
     synced: 0,
     working: 0,
-    workingEscrow: 0,
+    working_escrow: 0,
+    working_release_escrow: 0,
   };
   return Data.create(indexEscrow);
 };
@@ -60,6 +61,14 @@ export const startWorkEscrow = async (status: number) => {
   return await Data.findOneAndUpdate(
     { id: 1 },
     { working_escrow: status },
+    { returnOriginal: false }
+  );
+};
+
+export const startWorkReleaseEscrow = async (status: number) => {
+  return await Data.findOneAndUpdate(
+    { id: 1 },
+    { working_release_escrow: status },
     { returnOriginal: false }
   );
 };
