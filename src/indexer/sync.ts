@@ -48,7 +48,7 @@ export default async () => {
   
       await createBlock({
         signature: block.signature,
-        block_time: block.blockTime * 1000,
+        block_time: block.blockTime,
         block_index: Date.now(),
       });
 

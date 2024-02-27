@@ -31,7 +31,7 @@ export const createEscrow = async (
   const callerPubKey = callerAcc.publicKey;
   const tempMintAcc = new Keypair();
 
-// Creating temporary token account instruction
+  // Creating temporary token account instruction
   const tempTokenAccountIX = SystemProgram.createAccount({
     programId: TOKEN_PROGRAM_ID,
     space: AccountLayout.span,
@@ -58,7 +58,7 @@ export const createEscrow = async (
     programId: escrowProgramId,
   });
 
-// Creating escrow instruction to generate an escrow
+  // Creating escrow instruction to generate an escrow
   const initEscrowIX = new TransactionInstruction({
     programId: escrowProgramId,
     keys: [

@@ -11,6 +11,7 @@ export interface IData {
   synced: number;
   working: number;
   working_escrow: number;
+  working_release_escrow: number;
   block_count: number;
   escrow_count: number;
   wallet_count: number;
@@ -26,6 +27,7 @@ const dataSchema = new Schema<IData>(
     synced: Number,
     working: Number,
     working_escrow: Number,
+    working_release_escrow: Number,
     block_count: Number,
     escrow_count: Number,
     wallet_count: Number,
