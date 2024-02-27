@@ -1,4 +1,4 @@
-import {model, Schema} from "mongoose";
+import { model, Schema } from "mongoose";
 
 export interface IEscrow {
   created_at: Date;
@@ -6,6 +6,7 @@ export interface IEscrow {
   input_tx_hash: string;
   payout_tx_hash: string;
   token_pubkey: string;
+  caller_account_pubkey: string;
   initializer_account_pubkey: string;
   temp_token_account_pubkey: string;
   receiver_account_pubkey: string;
@@ -29,6 +30,7 @@ const escrowSchema = new Schema<IEscrow>(
     token_pubkey: String,
     status: String,
     completed: Number,
+    caller_account_pubkey: String,
     initializer_account_pubkey: String,
     temp_token_account_pubkey: String,
     receiver_account_pubkey: String,
@@ -37,4 +39,4 @@ const escrowSchema = new Schema<IEscrow>(
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );
 
-export const Escrow = model<IEscrow>('Escrow', escrowSchema)
+export const Escrow = model<IEscrow>("Escrow", escrowSchema);

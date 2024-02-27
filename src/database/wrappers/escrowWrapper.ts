@@ -1,4 +1,4 @@
-import { IEscrow, Escrow } from "../escrow.model";
+import { Escrow } from "../escrow.model";
 
 export const saveEscrow = async (data: any) => {
   await Escrow.create(data);
@@ -29,4 +29,8 @@ export const fetchEscrowsSkip = async (prev_escrow_index: number) => {
 
 export const getEscrowByPubKey = async (pubKey: string) => {
   return Escrow.findOne({ escrow_account_pubkey: pubKey });
+};
+
+export const getEscrowByAcc = async (pubKey: string) => {
+  return Escrow.findOne({ temp_token_account_pubkey: pubKey });
 };

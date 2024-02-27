@@ -26,6 +26,15 @@ export const releaseEscrow = async (escrow: IEscrow) => {
   const callerPubKey = callerAcc.publicKey;
   const amount = escrow.escrow_amount;
 
+  const tempTokenAccBalance = await getTokenBalance(
+    tempTokenPubKey,
+    connection
+  );
+
+  if (tempTokenAccBalance < amount) {
+    throw new Error("Usdt not deposited to wallet yet");
+  }
+
   const receiverTokenPubKey = (
     await getOrCreateAssociatedTokenAccount(
       connection,
@@ -80,8 +89,8 @@ export const releaseEscrow = async (escrow: IEscrow) => {
   const balAfter = await getTokenBalance(receiverTokenPubKey, connection);
 
   if (balAfter !== balBefore + amount) {
-    return `Error: fail to release tokens!!`;
+    throw new Error(`Error: fail to release tokens!!`);
   }
 
-  return `Token has been released, old balance: ${balBefore} and new balance: ${balAfter}`;
+  return { balAfter, balBefore, txHash: res };
 };

@@ -77,6 +77,7 @@ export default async () => {
             input_tx_hash: "",
             payout_tx_hash: "",
             token_pubkey: mint,
+            caller_account_pubkey: "",
             initializer_account_pubkey: "",
             temp_token_account_pubkey: "",
             receiver_account_pubkey: "",
@@ -92,6 +93,7 @@ export default async () => {
           let logged = 0;
           if (!escrow && call === 0) {
             storeData.input_tx_hash = blockHash;
+            storeData.caller_account_pubkey = accounts[6].toString();
             storeData.initializer_account_pubkey = accounts[0].toString();
             storeData.receiver_account_pubkey = accounts[1].toString();
             storeData.temp_token_account_pubkey = accounts[2].toString();
