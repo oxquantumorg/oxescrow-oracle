@@ -12,7 +12,7 @@ export const logError = (msg) => {
       todayErrorFile,
       new Date(Date.now()).toTimeString() + " \n"
     );
-    fs.appendFileSync(todayErrorFile, msg);
+    fs.appendFileSync(todayErrorFile, msg.toString());
     fs.appendFileSync(todayErrorFile, "\n \n");
     console.log(`\x1b[31m${msg}\x1b[0m`);
   } catch (error) {

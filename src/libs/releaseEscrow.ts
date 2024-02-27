@@ -3,7 +3,7 @@ import {
   getOrCreateAssociatedTokenAccount,
 } from "@solana/spl-token";
 import config from "../config";
-import { getConnection } from "./network";
+import { getConnection } from "../config/network";
 import { getAdminAcc, getTokenBalance } from "../config/utils";
 import { IEscrow } from "../database/escrow.model";
 
