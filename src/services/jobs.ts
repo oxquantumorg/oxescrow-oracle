@@ -9,6 +9,6 @@ cron.schedule("*/10 * * * * *", () => {
   escrowIndex();
 });
 
-cron.schedule("*/5 * * * * *", () => {
+cron.schedule("*/5 * * * *", () => {
   releaseEscrowIndex();
 });
