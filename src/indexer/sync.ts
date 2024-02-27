@@ -6,6 +6,7 @@ import {
 } from "../database/wrappers/dataWrapper";
 import { createBlock, findBlock } from "../database/wrappers/blockWrapper";
 import { fetchOnChainBlocks } from "../libs/fetchOnChainBlocks";
+import { logError } from "../config/utils";
 
 export default async () => {
   try {
@@ -45,7 +46,7 @@ export default async () => {
       await updateData({
         prev_block_hash: block.signature,
       });
-  
+
       await createBlock({
         signature: block.signature,
         block_time: block.blockTime,
@@ -62,8 +63,8 @@ export default async () => {
       block_count: blockCount,
     });
     await startWork(0);
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    logError(error);
     await startWork(0);
   }
 };

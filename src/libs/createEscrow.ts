@@ -5,7 +5,7 @@ import {
 } from "@solana/spl-token";
 import { Keypair, sendAndConfirmTransaction } from "@solana/web3.js";
 import config from "../config";
-import { getConnection } from "./network";
+import { getConnection } from "../config/network";
 import { ESCROW_ACCOUNT_DATA_LAYOUT, getAdminAcc } from "../config/utils";
 
 const {

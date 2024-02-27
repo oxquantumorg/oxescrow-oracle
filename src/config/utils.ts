@@ -1,9 +1,23 @@
 require("dotenv").config();
 import { Keypair, PublicKey } from "@solana/web3.js";
+import * as fs from "fs";
 const BufferLayout = require("buffer-layout");
 
-export const logError = (msg: string) => {
-  console.log(`\x1b[31m${msg}\x1b[0m`);
+export const logError = (msg) => {
+  try {
+    const todayErrorFile = `logs/${new Date(Date.now())
+      .toDateString()
+      .replace(/ /gi, "-")}.log`;
+    fs.appendFileSync(
+      todayErrorFile,
+      new Date(Date.now()).toTimeString() + " \n"
+    );
+    fs.appendFileSync(todayErrorFile, msg.toString());
+    fs.appendFileSync(todayErrorFile, "\n \n");
+    console.log(`\x1b[31m${msg}\x1b[0m`);
+  } catch (error) {
+    console.error("Error writing to log file:", error);
+  }
 };
 
 const publicKey = (property = "publicKey") => {

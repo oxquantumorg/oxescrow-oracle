@@ -12,6 +12,7 @@ import {
   updateEscrow,
 } from "../database/wrappers/escrowWrapper";
 import { fetchBlocks } from "../database/wrappers/blockWrapper";
+import { logError } from "../config/utils";
 const connection = new Connection(config.rpc, "confirmed");
 
 export default async () => {
@@ -131,7 +132,7 @@ export default async () => {
     await startWorkEscrow(0);
     console.log("- Escrow index end...");
   } catch (error) {
-    console.log(error);
+    logError(error);
     startWorkEscrow(0);
   }
 };
