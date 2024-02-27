@@ -1,3 +1,4 @@
+import { logError } from "../config/utils";
 import {
   fetchEscrows,
   getEscrowByAcc,
@@ -34,6 +35,7 @@ app.get("/create_escrow", async (req, res) => {
       },
     });
   } catch (error) {
+    logError(error);
     return res.send({
       isSuccess: false,
       message: error.message,
@@ -81,6 +83,7 @@ app.get("/releaseescrow", async (req, res) => {
       data: data,
     });
   } catch (error) {
+    logError(error);
     return res.send({
       isSuccess: false,
       message: error.message,

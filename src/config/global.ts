@@ -1,6 +1,7 @@
 require("dotenv").config();
 import mongoose from "mongoose";
 import { startWork, startWorkEscrow } from "../database/wrappers/dataWrapper";
+import { logError } from "./utils";
 
 (async () => {
   try {
@@ -11,8 +12,6 @@ import { startWork, startWorkEscrow } from "../database/wrappers/dataWrapper";
 
     await Promise.all([startWorkEscrow(0), startWork(0)]);
   } catch (err) {
-    console.log(err);
-    
-    // throw err;
+    logError(err);
   }
 })();

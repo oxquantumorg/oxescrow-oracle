@@ -1,3 +1,4 @@
+import { logError } from "../config/utils";
 import {
   getData,
   startWorkReleaseEscrow,
@@ -52,7 +53,7 @@ export default async () => {
     await startWorkReleaseEscrow(0);
     console.log("- Escrow release end...");
   } catch (error) {
-    console.log(error.message);
+    logError(error);
     startWorkReleaseEscrow(0);
   }
 };
