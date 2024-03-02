@@ -17,17 +17,13 @@ const {
 } = require("@solana/web3.js");
 const BN = require("bn.js");
 
-export const createEscrow = async (
-  amount: number,
-  senderPublicKey: string,
-  receiverPubKey: string
-) => {
+export const createEscrow = async (amount: number, initializerPublicKey: string) => {
   const connection = await getConnection();
   const escrowProgramId = config.programPubkey;
   const usdcMintPubKey = config.mint;
 
   const callerAcc = getAdminAcc();
-  const initializerPubKey = new PublicKey(senderPublicKey);
+  const initializerPubKey = new PublicKey(initializerPublicKey);
   const callerPubKey = callerAcc.publicKey;
   const tempMintAcc = new Keypair();
 
@@ -68,7 +64,7 @@ export const createEscrow = async (
         isWritable: false,
       },
       {
-        pubkey: new PublicKey(receiverPubKey),
+        pubkey: initializerPubKey,
         isSigner: false,
         isWritable: false,
       },
@@ -118,7 +114,7 @@ export const createEscrow = async (
 
   if (
     !new PublicKey(decodedEscrowState.initializerPubkey).equals(
-      new PublicKey(senderPublicKey)
+      new PublicKey(initializerPublicKey)
     )
   ) {
     throw new Error(

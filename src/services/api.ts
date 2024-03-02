@@ -14,16 +14,11 @@ const port = 4001;
 
 // exposes endpoint for creating escrow
 app.get("/create_escrow", async (req, res) => {
-  const receiverPubKey = req.query.receiverPubKey;
-  const senderPublicKey = req.query.senderPublicKey;
+  const initializerPublicKey = req.query.initializerPublicKey;
   const amount = req.query.amount;
 
   try {
-    const escrowAcc = await createEscrow(
-      amount,
-      senderPublicKey,
-      receiverPubKey
-    );
+    const escrowAcc = await createEscrow(amount, initializerPublicKey);
     const message = `Escrow successfully initialized. 
     Expecting ${amount} token deposit to the account ${escrowAcc}\n`;
     return res.send({
