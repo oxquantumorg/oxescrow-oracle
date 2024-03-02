@@ -20,7 +20,9 @@ app.get("/create_escrow", async (req, res) => {
   try {
     const escrowAcc = await createEscrow(amount, initializerPublicKey);
     const message = `Escrow successfully initialized. 
-    Expecting ${amount} token deposit to the account ${escrowAcc}\n`;
+    \n
+    Escrow Address: ${escrowAcc}`;
+    
     return res.send({
       isSuccess: true,
       message,
