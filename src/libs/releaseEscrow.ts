@@ -32,7 +32,7 @@ export const releaseEscrow = async (escrow: IEscrow) => {
   );
 
   if (tempTokenAccBalance < amount) {
-    throw new Error("Usdt not deposited to wallet yet");
+    throw new Error("Usdc not deposited to wallet yet");
   }
 
   const receiverTokenPubKey = (
